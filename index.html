@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Display and Countdown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .container {
+            margin-bottom: 20px;
+        }
+        .countdown {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Current Time</h2>
+        <div id="currentTime" style="font-size: 28px;"></div>
+    </div>
+
+    <div class="container">
+        <h2>Countdown Timers</h2>
+
+        <div>
+            <h3>4 Hours</h3>
+            <div class="countdown" id="countdown4h"></div>
+        </div>
+
+        <div>
+            <h3>1 Hour</h3>
+            <div class="countdown" id="countdown1h"></div>
+        </div>
+
+        <div>
+            <h3>30 Minutes</h3>
+            <div class="countdown" id="countdown30m"></div>
+        </div>
+
+        <div>
+            <h3>15 Minutes</h3>
+            <div class="countdown" id="countdown15m"></div>
+        </div>
+
+        <div>
+            <h3>5 Minutes</h3>
+            <div class="countdown" id="countdown5m"></div>
+        </div>
+
+        <div>
+            <h3>1 Minute</h3>
+            <div class="countdown" id="countdown1m"></div>
+        </div>
+    </div>
+
+    <script>
+        // Function to display the current time
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('currentTime').textContent = timeString;
+        }
+
+        // Function to start a countdown
+        function startCountdown(duration, displayElement) {
+            let timer = duration, hours, minutes, seconds;
+            setInterval(function () {
+                hours = Math.floor(timer / 3600);
+                minutes = Math.floor((timer % 3600) / 60);
+                seconds = timer % 60;
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                displayElement.textContent = `${hours}h ${minutes}m ${seconds}s`;
+
+                if (--timer < 0) {
+                    displayElement.textContent = "Time's up!";
+                }
+            }, 1000);
+        }
+
+        // Initialize current time and update every second
+        setInterval(updateCurrentTime, 1000);
+
+        // Set countdowns for different durations (in seconds)
+        const countdown4h = 4 * 60 * 60;
+        const countdown1h = 1 * 60 * 60;
+        const countdown30m = 30 * 60;
+        const countdown15m = 15 * 60;
+        const countdown5m = 5 * 60;
+        const countdown1m = 1 * 60;
+
+        // Start countdowns
+        startCountdown(countdown4h, document.getElementById('countdown4h'));
+        startCountdown(countdown1h, document.getElementById('countdown1h'));
+        startCountdown(countdown30m, document.getElementById('countdown30m'));
+        startCountdown(countdown15m, document.getElementById('countdown15m'));
+        startCountdown(countdown5m, document.getElementById('countdown5m'));
+        startCountdown(countdown1m, document.getElementById('countdown1m'));
+    </script>
+</body>
+</html>
