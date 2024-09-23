@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Display and Countdown</title>
+    <title>Remaining Time</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,6 +17,13 @@
             font-size: 24px;
             margin-top: 10px;
         }
+        .countdown-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -26,36 +33,35 @@
     </div>
 
     <div class="container">
-        <h2>Countdown Timers</h2>
+        <h2>Remaining Timers</h2>
+        <div class="countdown-row">
+            <h3>M1  :</h3>
+            <div class="countdown" id="countdown1m"></div>
+        </div>            
 
-        <div>
-            <h3>4 Hours</h3>
-            <div class="countdown" id="countdown4h"></div>
-        </div>
-
-        <div>
-            <h3>1 Hour</h3>
-            <div class="countdown" id="countdown1h"></div>
-        </div>
-
-        <div>
-            <h3>30 Minutes</h3>
-            <div class="countdown" id="countdown30m"></div>
-        </div>
-
-        <div>
-            <h3>15 Minutes</h3>
-            <div class="countdown" id="countdown15m"></div>
-        </div>
-
-        <div>
-            <h3>5 Minutes</h3>
+        <div class="countdown-row">
+            <h3>M5  :</h3>
             <div class="countdown" id="countdown5m"></div>
         </div>
 
-        <div>
-            <h3>1 Minute</h3>
-            <div class="countdown" id="countdown1m"></div>
+        <div class="countdown-row">
+            <h3>M15 :</h3>
+            <div class="countdown" id="countdown15m"></div>
+        </div>
+
+        <div class="countdown-row">
+            <h3>M30 :</h3>
+            <div class="countdown" id="countdown30m"></div>
+        </div>
+
+        <div class="countdown-row">
+            <h3>H1  :</h3>
+            <div class="countdown" id="countdown1h"></div>
+        </div>
+
+        <div class="countdown-row">
+            <h3>H4  :</h3>
+            <div class="countdown" id="countdown4h"></div>
         </div>
     </div>
 
@@ -67,43 +73,39 @@
             document.getElementById('currentTime').textContent = timeString;
         }
 
-        // Function to start a countdown
-        function startCountdown(duration, displayElement) {
-            let timer = duration, hours, minutes, seconds;
+        // Function to calculate the remaining time until the next interval (seconds)
+        function timeUntilNextInterval(currentTime, intervalInMinutes) {
+            const secondsInInterval = intervalInMinutes * 60;
+            const secondsPassedInDay = (currentTime.getHours() * 3600) + (currentTime.getMinutes() * 60) + currentTime.getSeconds();
+            const secondsUntilNextInterval = secondsInInterval - (secondsPassedInDay % secondsInInterval);
+            return secondsUntilNextInterval === secondsInInterval ? 0 : secondsUntilNextInterval;
+        }
+
+        // Function to start interval countdown
+        function startIntervalCountdown(intervalInMinutes, displayElement) {
             setInterval(function () {
-                hours = Math.floor(timer / 3600);
-                minutes = Math.floor((timer % 3600) / 60);
-                seconds = timer % 60;
+                const now = new Date();
+                const secondsRemaining = timeUntilNextInterval(now, intervalInMinutes);
+                const minutes = Math.floor(secondsRemaining / 60);
+                const seconds = secondsRemaining % 60;
 
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
+                const displayMinutes = minutes > 0 ? minutes + "m " : "";
+                const displaySeconds = seconds < 10 ? "0" + seconds : seconds;
 
-                displayElement.textContent = `${hours}h ${minutes}m ${seconds}s`;
-
-                if (--timer < 0) {
-                    displayElement.textContent = "Time's up!";
-                }
+                displayElement.textContent = `${displayMinutes}${displaySeconds}s`;
             }, 1000);
         }
 
         // Initialize current time and update every second
         setInterval(updateCurrentTime, 1000);
 
-        // Set countdowns for different durations (in seconds)
-        const countdown4h = 4 * 60 * 60;
-        const countdown1h = 1 * 60 * 60;
-        const countdown30m = 30 * 60;
-        const countdown15m = 15 * 60;
-        const countdown5m = 5 * 60;
-        const countdown1m = 1 * 60;
-
-        // Start countdowns
-        startCountdown(countdown4h, document.getElementById('countdown4h'));
-        startCountdown(countdown1h, document.getElementById('countdown1h'));
-        startCountdown(countdown30m, document.getElementById('countdown30m'));
-        startCountdown(countdown15m, document.getElementById('countdown15m'));
-        startCountdown(countdown5m, document.getElementById('countdown5m'));
-        startCountdown(countdown1m, document.getElementById('countdown1m'));
+        // Start countdowns for each interval
+        startIntervalCountdown(1, document.getElementById('countdown1m'));   // Countdown to next 1 minute
+        startIntervalCountdown(5, document.getElementById('countdown5m'));   // Countdown to next 5 minutes
+        startIntervalCountdown(15, document.getElementById('countdown15m')); // Countdown to next 15 minutes
+        startIntervalCountdown(30, document.getElementById('countdown30m')); // Countdown to next 30 minutes
+        startIntervalCountdown(60, document.getElementById('countdown1h'));  // Countdown to next 1 hour
+        startIntervalCountdown(240, document.getElementById('countdown4h')); // Countdown to next 4 hours
     </script>
 </body>
 </html>
